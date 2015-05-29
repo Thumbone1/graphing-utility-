@@ -3,35 +3,63 @@ Created on Thu May 28 02:16:54 2015
 @author: Judge Gambill
 
 **To do:**
-1.  add gel additions and assoc w/dict to dmr.
-2.  add ability to import from excel (when I get it on my computer)
-3.  generalize - no hard code
 
-Note: All rheologies are made up and do not reflect any real values associated with any DMR
+add gel additions and assoc w/dict to dmr.
+import from excel.
+add interface that will show red dot for 'Fail' and green for 'Pass'
+    - should only take the last entries in the array
+
+ts = pd.Series(np.random.randn(1000), 
+               index=pd.date_range('1/1/2000', periods=1000))
 
 """
 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+      
+dmr = range(1, 24) 
+r6 = np.array([4, 5, 4, 6, 4, 3, 6, 4, 
+               5, 3, 5, 6, 7, 9, 10, 11,
+               10, 11, 10, 9, 12, 13, 11])
+r3 = r6 - 1
+limit = np.array([6] * 23)
+
+# xls = pd.ExcelFile('put_path_here.xls')
+# data = xls.parse('putSheetHere', index_col=None, na_values=['NA'])
 
 def graph():
-    dmr = xrange(23) 
-    r6 = np.array([4, 5, 4, 6, 4, 3, 6, 4, 
-                   5, 3, 5, 6, 7, 9, 10, 11,
-                   10, 11, 10, 9, 12, 13, 11])
-    r3 = r6 - 1
-
-
+    
     plt.plot(dmr, r6, marker='o', linewidth=2.0, label='R6')
     plt.plot(dmr, r3, marker='^', linewidth=2.0, label='R3')
-
-    plt.xlabel('DMR number'); plt.ylabel('Cp')
+    plt.plot(dmr, limit, label='min R6 reading')
+    plt.xlabel('DMR number'); plt.ylabel('lb/100ft^2')
     plt.xticks(np.arange(min(dmr), max(dmr)+1, 1.0))
+    plt.yticks(np.arange(0, max(r6)+2, 1.0))
 
     plt.title('Low End Rheologies for 12.25" section')
     plt.legend(loc='best')
-
+    
     plt.show()
+   
+   
+def catagory():
+    
+    spec = 6
+    test = []
+    
+    for i in r6:
+        if i >= 6:
+            test.append('Pass')
+        else:
+            test.append('Fail')
+    
+    r6data = pd.DataFrame({'DMR' : dmr,
+                          'R6 Reading' : r6,
+                          'Spec' : spec,
+                          'Within spec?' : test})
 
+    print r6data
+
+catagory()
 graph()
